@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+# This script is dislaying the content of password
+#displays username user id and directory path for same user
+while read passwd; do
+ echo "$passwd" | cut -d ':' -f1,3,6
+done < "/etc/passwd"
