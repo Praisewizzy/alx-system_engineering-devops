@@ -1,0 +1,23 @@
+cript that installs Nginx server and redirects /redirect_me
+# Configures an Nginx server so that /redirect_me redirects to another page.
+# The redirection is configured as a "301 Moved Permanently"
+# Configure Nginx so that its HTTP response contains a custom header X-Served-By with value as hostname of the server.
+
+# Update package list and install nginx
+apt-get -y update
+apt-get -y install nginx
+
+# start nginx service
+service nginx start
+
+# Write to files
+echo "Hello World!" > /var/www/html/index.html
+echo  "Ceci n'est pas une page" > /var/www/html/404.html
+
+# Configuration string
+new_string="server_name _;\n\n\tadd_header X-Served-By \$HOSTNAME;\n\n\tlocation /redirect_me {\n\t\treturn 301 https://bolexzy.hashnode.dev/;\n\t}\
+\n\n\terror_page 404 /404.html;\n\tlocation = /404.html {\n\t\troot /var/www/html;\n\tinternal;\n\t}"
+sed -i "s|server_name _;|${new_string}|" /etc/nginx/sites-available/default
+
+# restart nginx service
+service nginx restart
