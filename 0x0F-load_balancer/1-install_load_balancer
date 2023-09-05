@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+# Install and configure HAproxy on lb-01 server.
+# Distribute requests using a roundrobin algorithm.
+# sends traffic to web-01 and web-02 servers.
+# Make sure that HAProxy can be managed via an init script
+
+# Update package list and install haproxy
+apt-get -y update
+apt-get -y install haproxy
+
+# Configures haproxy to forward requests to my servers using round-robin algorithm
+echo "
+
+frontend webapp
+        bind *:80
+        mode tcp
+        default_backend webapp_servers
+
+backend webapp_servers
+        balance roundrobin
+        server 03-web-01 100.26.219.51:80 check
+        server 03-web-02 52.87.251.218:80 check
+" >> /etc/haproxy/haproxy.cfg
+
+# restart haproxy
+service haproxy restart
